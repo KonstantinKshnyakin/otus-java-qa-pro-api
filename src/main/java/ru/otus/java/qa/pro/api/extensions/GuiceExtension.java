@@ -1,15 +1,18 @@
 package ru.otus.java.qa.pro.api.extensions;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.junit.jupiter.api.extension.*;
+import ru.otus.java.qa.pro.api.utlil.InjectorManager;
 
-public class GuiceExtension implements TestInstancePostProcessor {
+public class GuiceExtension implements TestInstancePostProcessor, TestInstancePreDestroyCallback {
 
     @Override
     public void postProcessTestInstance(Object testInstance, ExtensionContext context) {
-        Injector injector = Guice.createInjector();
-        injector.injectMembers(testInstance);
+        InjectorManager.injectMembers(testInstance);
+    }
+
+    @Override
+    public void preDestroyTestInstance(ExtensionContext context) throws Exception {
+        InjectorManager.remove();
     }
 
 }
