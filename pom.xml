@@ -15,18 +15,23 @@
 
         <!--dependencies-->
         <guice.version>7.0.0</guice.version>
-        <junit.version>5.10.2</junit.version>
+        <junit.version>5.9.3</junit.version>
         <assertj-core.version>3.26.0</assertj-core.version>
         <rest-assured.version>5.5.0</rest-assured.version>
         <lombok.version>1.18.34</lombok.version>
         <datafaker.version>2.3.1</datafaker.version>
         <jackson.version>2.17.2</jackson.version>
+        <allure.version>2.27.0</allure.version>
+        <aspectj.version>1.9.22</aspectj.version>
 
         <!--        plugins-->
         <surefire.version>3.3.0</surefire.version>
         <compiler.version>3.13.0</compiler.version>
         <checkstyle.version>3.4.0</checkstyle.version>
         <spotbugs.version>4.8.6.0</spotbugs.version>
+        <allure-maven.version>2.14.0</allure-maven.version>
+
+        <allure-results>${project.build.directory}/allure-results</allure-results>
     </properties>
 
     <dependencies>
@@ -66,6 +71,38 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-rest-assured</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-assertj</artifactId>
+            <version>${allure.version}</version>
+        </dependency>
+
+        <!--        for image-->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit-platform</artifactId>
+            <version>${surefire.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -74,6 +111,23 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
+                <configuration>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <argLine>
+                        -Dfile.encoding=${project.build.sourceEncoding}
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                    <systemPropertyVariables>
+                        <allure.results.directory>${allure-results}</allure.results.directory>
+                    </systemPropertyVariables>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
@@ -101,6 +155,15 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${spotbugs.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-maven</artifactId>
+                <version>${allure-maven.version}</version>
+                <configuration>
+                    <reportVersion>${allure.version}</reportVersion>
+                    <resultsDirectory>${allure-results}</resultsDirectory>
+                </configuration>
             </plugin>
         </plugins>
     </build>

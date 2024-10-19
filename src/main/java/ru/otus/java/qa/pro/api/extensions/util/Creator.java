@@ -3,6 +3,7 @@ package ru.otus.java.qa.pro.api.extensions.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.inject.Inject;
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.otus.java.qa.pro.api.controllers.PetController;
 import ru.otus.java.qa.pro.api.dto.pet.Pet;
@@ -25,6 +26,7 @@ public class Creator {
         creatorByClass.put(Pet.class, this::createPet);
     }
 
+    @Step("Создание Pet")
     private Pet createPet() {
         Pet pet = generator.get(Pet.class);
         Response response = petController.postPet(pet);
