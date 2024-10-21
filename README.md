@@ -6,7 +6,8 @@
 - RestAssured
 - Google Guice
 
-### Строка запуска : clean test
+**Строка запуска : `mvn clean test`**
+**Строка запуска : `docker run --rm localhost:5000/api-tests:1.0.0`**
 
 
 ### Итоговое задание:

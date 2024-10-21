@@ -1,7 +1,6 @@
 target/
 .idea
 .allure
-architecture.png
 Dockerfile
 Jenkinsfile
 README.md

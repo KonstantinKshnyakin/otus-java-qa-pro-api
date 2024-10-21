@@ -8,8 +8,13 @@ properties([
 ])
 
 pipeline {
+
     agent {
         label 'docker-node-1'
+    }
+
+    options {
+        timeout(time: 15, unit: 'MINUTES')
     }
 
     stages {
@@ -22,9 +27,11 @@ pipeline {
 
         stage('Run test image') {
             steps {
-                sh "docker run --rm\
-                -v /home/konstantin/jenkins/jenkins/jenkins_home/workspace/api-tests/allure-results:/api-tests/target/allure-results \
-                localhost:5000/api-tests:$params.image_version"
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                    sh "docker run --rm\
+                    -v /home/konstantin/jenkins/jenkins/jenkins_home/workspace/api-tests/allure-results:/api-tests/target/allure-results \
+                    localhost:5000/api-tests:$params.image_version"
+                }
             }
         }
 
